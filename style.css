@@ -1,0 +1,545 @@
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "LavaProHL";
+  src: url("LavaProHL_desk/LavaPro_HL-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+  min-width: 100vw;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  --about-font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+  background-image: url("assets/sky.png");
+  background-size: 100vw 100vh;
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: #1f2937;
+}
+
+body[data-view="sky"] {
+  overflow: hidden;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M4 28l6-1 16-16-5-5L5 22l-1 6z' fill='%23ffffff' stroke='%2300b7ff' stroke-width='2'/></svg>") 4 28, auto;
+}
+
+body[data-view="index"] {
+  overflow: hidden;
+  background-image: none;
+  background-color: #ffffff;
+}
+
+body[data-view="index"] .about-toggle,
+body[data-view="index"] .toggle-label {
+  color: #00b7ff;
+}
+
+body[data-view="index"] .view-container,
+body[data-view="index"] .view {
+  padding: 0;
+}
+
+body.intro-locked {
+  overflow: hidden;
+}
+
+.site-header {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  transition: transform 260ms ease, padding 260ms ease,
+    box-shadow 260ms ease, border-radius 260ms ease, top 260ms ease;
+}
+
+.site-logo {
+  width: auto;
+  height: 12vh;
+  max-width: none;
+  transition: height 260ms ease;
+  background: none;
+}
+
+body.intro-enabled .site-header {
+  position: fixed;
+  top: var(--intro-logo-top, 5vh);
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  padding: var(--intro-logo-padding, 24px) 0 0;
+  background: none;
+  border-bottom: none;
+  box-shadow: none;
+  z-index: 12;
+  transition: none;
+}
+
+body.intro-enabled .site-logo {
+  max-width: none;
+  transition: none;
+}
+
+body.is-scrolled .site-header {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 16px;
+  box-shadow: none;
+  z-index: 12;
+  background: transparent;
+}
+
+body.is-scrolled .site-logo {
+  width: 20vw;
+}
+
+body[data-view="sky"] .site-header {
+  pointer-events: none;
+}
+
+body[data-view="sky"] .site-logo {
+  pointer-events: none;
+}
+
+.view-toggle {
+  position: fixed;
+  top: 36px;
+  right: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  z-index: 20;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  text-align: center;
+  color: #ffffff;
+}
+
+.about-toggle {
+  position: fixed;
+  top: 36px;
+  left: 36px;
+  z-index: 20;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  color: #ffffff;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 2px solid #00b7ff;
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  height: calc(100% - 4px);
+  border-radius: 999px;
+  background: #00b7ff;
+  box-shadow: none;
+  transition: transform 200ms ease;
+}
+
+.toggle-switch.is-index::before {
+  transform: translateX(100%);
+}
+
+.toggle-switch button {
+  position: relative;
+  z-index: 1;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: transparent;
+  font-size: 0;
+}
+
+.toggle-switch button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggle-label {
+  color: #ffffff;
+}
+
+.view-container {
+  padding: 24px;
+}
+
+.view {
+  padding: 18px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 320ms ease, transform 320ms ease;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.view.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  height: auto;
+  overflow: visible;
+}
+
+#sky.view {
+  transform: none;
+}
+
+#sky.view.is-active {
+  transform: none;
+}
+
+.view.is-exiting {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.frame {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+}
+
+.sky-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: inherit;
+}
+
+.sky-draw {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: auto;
+  touch-action: none;
+  z-index: 6;
+  cursor: inherit;
+}
+
+.anchor-point {
+  fill: #ffffff;
+  stroke: #00b7ff;
+  stroke-width: 1.5;
+  cursor: grab;
+}
+
+.anchor-point:active {
+  cursor: grabbing;
+}
+
+.selection-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  z-index: 9;
+  pointer-events: auto;
+}
+
+.selection-overlay[hidden] {
+  display: none;
+}
+
+.selection-card {
+  display: inline-block;
+  padding: 4px 2px 2px 2px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  background: transparent;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(0.8rem, 1.28vw, 1.12rem);
+  line-height: 1.2;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.selection-input {
+  outline: none;
+  width: max-content;
+  min-width: 14ch;
+  color: #ffffff;
+}
+
+.selection-input::placeholder {
+  color: #ffffff;
+  opacity: 0.6;
+}
+
+.selection-submit {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #00b7ff;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(0.8rem, 1.28vw, 1.12rem);
+}
+
+.selection-submit:not(:disabled):hover {
+  background: #3d82ff;
+}
+
+.index-gallery {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  grid-template-rows: auto;
+  gap: 60px;
+  padding: 5vh 0 10vh 4vw;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: start;
+}
+
+.index-card {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: max(35vw, 35vh);
+  align-items: flex-start;
+}
+
+.index-preview {
+  position: relative;
+  width: 100%;
+  height: max(35vw, 35vh);
+  align-self: stretch;
+}
+
+.index-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.index-outline {
+  fill: none;
+  stroke: #00b7ff;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.index-caption {
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(0.8rem, 1.28vw, 1.12rem);
+  line-height: 1.2;
+  color: #00b7ff;
+  text-align: left;
+  white-space: pre-line;
+  align-self: stretch;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.index-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.index-gallery {
+  scrollbar-width: none;
+}
+
+body.is-scrolled .view-container {
+  padding-top: 120px;
+}
+
+body.intro-enabled #intro.view.is-active,
+body.intro-enabled #about.view.is-active {
+  min-height: 140vh;
+}
+
+body.intro-enabled #intro.view.is-active {
+  padding: 0;
+  min-height: 100vh;
+}
+
+.about-overlay {
+  position: fixed;
+  top: calc(var(--logo-bottom, 40vh) + 5vh);
+  left: 50%;
+  transform: translate(-50%, 100vh);
+  width: 48vw;
+  height: 48vh;
+  padding: 32px 64px 32px;
+  border-radius: 24px;
+  border: 2px solid #00b7ff;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: var(--about-font-size);
+  line-height: 1.4;
+  text-align: left;
+  color: #00b7ff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 11;
+  transition: none;
+}
+
+.instruction-text {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  color: #ffffff;
+  font-family: "LavaProHL", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: calc(var(--about-font-size) * 9);
+  animation: instruction-out 2000ms ease-in-out forwards;
+  animation-delay: 7000ms;
+}
+
+.instruction-text.is-hidden {
+  animation: none;
+  opacity: 0;
+}
+
+.instruction-word {
+  position: absolute;
+  left: var(--word-x, 10vw);
+  top: var(--word-y, 20vh);
+  opacity: 0;
+  animation: instruction-in 1200ms ease-in-out forwards;
+  animation-delay: var(--word-delay, 1200ms);
+}
+
+.instruction-word.word-1 {
+  --word-x: 8vw;
+  --word-y: 20vh;
+}
+
+.instruction-word.word-2 {
+  --word-x: 43vw;
+  --word-y: 24vh;
+}
+
+.instruction-word.word-3 {
+  --word-x: 58vw;
+  --word-y: 21vh;
+}
+
+.instruction-word.word-4 {
+  --word-x: 22vw;
+  --word-y: 44vh;
+}
+
+.instruction-word.word-5 {
+  --word-x: 52vw;
+  --word-y: 46vh;
+}
+
+.instruction-word.word-6 {
+  --word-x: 16vw;
+  --word-y: 68vh;
+}
+
+.instruction-word.word-7 {
+  --word-x: 48vw;
+  --word-y: 72vh;
+}
+
+.instruction-word.word-8 {
+  --word-x: 78vw;
+  --word-y: 70vh;
+}
+
+@keyframes instruction-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes instruction-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.about-close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #00b7ff;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-close:hover {
+  background: #3d82ff;
+}
+
+.about-overlay p {
+  margin: 0;
+}
+
+body.about-ready .about-overlay {
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  opacity: 1;
+}

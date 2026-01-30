@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloudgazing</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <img
+        src="assets/cloudgazing_logo.svg"
+        alt="Cloudgazing"
+        class="site-logo"
+      />
+    </header>
+
+    <div class="view-toggle" aria-label="View toggle">
+      <span class="toggle-label" data-view-label="sky">Sky</span>
+      <div class="toggle-switch" aria-hidden="true">
+        <button type="button" data-view="sky" aria-label="Sky" disabled></button>
+        <button
+          type="button"
+          data-view="index"
+          aria-label="Index"
+          disabled
+        ></button>
+      </div>
+      <span class="toggle-label" data-view-label="index">Index</span>
+    </div>
+
+    <button type="button" class="about-toggle" data-action="about">
+      About
+    </button>
+
+    <div class="about-overlay">
+      <button
+        type="button"
+        class="about-close"
+        data-action="about-close"
+        aria-label="Close about"
+      >
+        ×
+      </button>
+      <p>
+        Pareidolia is the human tendency to find meaning in ambiguity. Our mind is
+        constantly scanning the world for patterns, rapidly matching what we see
+        to what we already know. Even when the signal is incomplete or random,
+        the brain prefers something over nothing.
+      </p>
+      <p>
+        Clouds are perhaps the most generous canvas for pareidolia. They are
+        formless, slow-moving, and constantly becoming something else.
+        CloudGazing is an invitation to slow down and give ourselves permission to look
+        without purpose – to wander and imagine. In watching clouds
+        become shapes, we glimpse how meaning itself is formed: softly,
+        fleetingly, and always a little differently for each of us.
+      </p>
+    </div>
+
+    <main class="view-container">
+      <section id="sky" class="view">
+        <div class="frame">
+          <div class="sky-stage">
+            <svg
+              class="sky-draw"
+              viewBox="0 0 1 1"
+              preserveAspectRatio="none"
+            ></svg>
+          </div>
+        </div>
+        <div class="instruction-text" aria-hidden="true">
+          <span class="instruction-word word-1" style="--word-delay: 0ms">
+            Catch
+          </span>
+          <span class="instruction-word word-2" style="--word-delay: 500ms">
+            a
+          </span>
+          <span class="instruction-word word-3" style="--word-delay: 1000ms">
+            cloud
+          </span>
+          <span class="instruction-word word-4" style="--word-delay: 1500ms">
+            and
+          </span>
+          <span class="instruction-word word-5" style="--word-delay: 2000ms">
+            describe
+          </span>
+          <span class="instruction-word word-6" style="--word-delay: 2500ms">
+            what
+          </span>
+          <span class="instruction-word word-7" style="--word-delay: 3000ms">
+            you
+          </span>
+          <span class="instruction-word word-8" style="--word-delay: 3500ms">
+            see
+          </span>
+        </div>
+        <div class="selection-overlay" hidden>
+          <input
+            class="selection-card selection-input"
+            type="text"
+            placeholder="What do you see?"
+            aria-label="What do you see"
+          />
+          <input
+            class="selection-card selection-input"
+            type="text"
+            placeholder="Your name"
+            aria-label="Your name"
+          />
+          <button
+            type="button"
+            class="selection-submit"
+            data-action="submit-selection"
+            hidden
+          >
+            Submit
+          </button>
+        </div>
+      </section>
+      <section id="index" class="view">
+        <div class="index-gallery"></div>
+      </section>
+    </main>
+
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
