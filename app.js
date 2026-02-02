@@ -120,14 +120,6 @@ function setView(viewId, options = {}) {
     // Only load gallery if it's empty (not already loaded)
     if (!indexGallery.hasChildNodes()) {
       loadIndexGallery();
-    } else {
-      // Re-trigger animation for existing cards
-      const cards = indexGallery.querySelectorAll(".index-card");
-      cards.forEach((card) => {
-        card.style.animation = "none";
-        card.offsetHeight; // Force reflow
-        card.style.animation = "";
-      });
     }
     // Pause video when entering index view
     if (skyVideo) skyVideo.pause();
