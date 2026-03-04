@@ -491,15 +491,7 @@ function formatDisplayTimestamp(isoString) {
 
 async function saveSelection() {
   if (!lastSelectionPathData || lastSelectionPoints.length === 0) return false;
-  const [whatInput, nameInput] = selectionInputs;
-  const payload = {
-    timestamp: new Date().toISOString(),
-    what: whatInput?.value.trim() ?? "",
-    name: nameInput?.value.trim() ?? "",
-    pathData: lastSelectionPathData,
-    points: lastSelectionPoints,
-  };
-
+  
   // Get the SVG's viewBox dimensions (this is what the path coordinates are based on)
   const viewBox = skySvg ? skySvg.getAttribute("viewBox") : null;
   let width, height;
@@ -511,6 +503,17 @@ async function saveSelection() {
     width = window.innerWidth;
     height = window.innerHeight;
   }
+  
+  const [whatInput, nameInput] = selectionInputs;
+  const payload = {
+    timestamp: new Date().toISOString(),
+    what: whatInput?.value.trim() ?? "",
+    name: nameInput?.value.trim() ?? "",
+    pathData: lastSelectionPathData,
+    points: lastSelectionPoints,
+    viewportWidth: width,
+    viewportHeight: height,
+  };
   
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -780,9 +783,13 @@ if (skySvg) {
   skySvg.addEventListener("pointerup", endStroke);
   skySvg.addEventListener("pointercancel", endStroke);
 
+  let resizeTimer;
   window.addEventListener("resize", () => {
-    if (currentView === "sky") setSkyViewBox();
-  updateLogoBottom();
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (currentView === "sky") setSkyViewBox();
+      updateLogoBottom();
+    }, 100);
   });
 }
 
@@ -826,7 +833,24 @@ async function renderIndexGallery(items) {
     return bbox;
   };
 
-  // Items are already sorted by created_at from Supabase query
+  const loadImage = (url) =>
+    new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+  const imageCache = new Map();
+  await Promise.all(
+    items.map(async (item) => {
+      const url = item.pngUrl || item.png || "";
+      if (!url || imageCache.has(url)) return;
+      const img = await loadImage(url);
+      if (img) imageCache.set(url, { width: img.naturalWidth, height: img.naturalHeight });
+    })
+  );
+
   for (const item of items) {
     const card = document.createElement("div");
     card.className = "index-card";
@@ -839,16 +863,14 @@ async function renderIndexGallery(items) {
     let rendered = false;
 
     try {
-      // Use pathData from metadata (stored in Supabase)
       const pathData = item.meta?.pathData || "";
       if (!pathData) throw new Error("empty path");
       
-      // Get the captured image URL from Supabase
       const imageUrl = item.pngUrl || item.png || "assets/sky.png";
 
-      // Use current viewport size for coordinate system
-      const fullWidth = window.innerWidth;
-      const fullHeight = window.innerHeight;
+      const cached = imageCache.get(imageUrl);
+      const fullWidth = cached?.width || window.innerWidth;
+      const fullHeight = cached?.height || window.innerHeight;
       const sourceViewBox = `0 0 ${fullWidth} ${fullHeight}`;
 
       const bbox = getPathBBox(pathData, sourceViewBox);
@@ -886,8 +908,11 @@ async function renderIndexGallery(items) {
         "http://www.w3.org/2000/svg",
         "image"
       );
+      image.setAttribute("x", "0");
+      image.setAttribute("y", "0");
       image.setAttribute("width", `${fullWidth}`);
       image.setAttribute("height", `${fullHeight}`);
+      image.setAttribute("preserveAspectRatio", "none");
       image.setAttribute("clip-path", `url(#${clipId})`);
       image.setAttribute("href", imageUrl);
       image.setAttributeNS(xlinkNS, "href", imageUrl);

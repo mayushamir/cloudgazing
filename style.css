@@ -28,7 +28,7 @@
 
 body {
   margin: 0;
-  min-width: 100vw;
+  min-width: 100%;
   font-family: "GT-Pressura-Extended-Text", system-ui, sans-serif;
   font-weight: 300;
   --about-font-size: clamp(0.9rem, 1.4vw, 1.2rem);
@@ -112,8 +112,8 @@ body.intro-locked {
   display: flex;
   justify-content: flex-start;
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: clamp(14px, 2.5vh, 24px);
+  left: clamp(14px, 1.5vw, 24px);
   padding: 0;
   pointer-events: none;
   width: auto;
@@ -122,7 +122,7 @@ body.intro-locked {
 
 .site-logo {
   width: auto;
-  height: 16vh;
+  height: clamp(90px, 16vh, 200px);
   max-width: none;
   background: none;
   overflow: visible;
@@ -153,8 +153,8 @@ body.intro-enabled .site-logo {
 
 .view-toggle {
   position: fixed;
-  top: 36px;
-  right: 36px;
+  top: clamp(24px, 4vh, 40px);
+  right: clamp(24px, 2.5vw, 40px);
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -172,8 +172,8 @@ body.intro-enabled .site-logo {
 
 .about-toggle {
   position: fixed;
-  top: 36px;
-  right: 260px;
+  top: clamp(24px, 4vh, 40px);
+  right: clamp(200px, 17vw, 270px);
   z-index: 20;
   display: inline-flex;
   align-items: center;
@@ -438,7 +438,7 @@ body.drawing-enabled .about-toggle {
   --col-gap: 10px;
   --grid-padding: 4vw;
   --grid-rows: 3;
-  --header-offset: calc(16vh + 40px);
+  --header-offset: calc(clamp(90px, 16vh, 200px) + 40px);
   --bottom-padding: 6vh;
   --caption-height: 48px;
   --card-inner-gap: 6px;
@@ -554,8 +554,8 @@ body.intro-enabled #intro.view.is-active {
   left: 50%;
   transform: translate(-50%, -50%);
   width: auto;
-  max-width: 40vw;
-  padding: 50px 50px;
+  max-width: clamp(340px, 40vw, 600px);
+  padding: clamp(24px, 4vw, 50px);
   border-radius: 24px;
   border: 2px solid #ff0068;
   background: #ffffff;
@@ -585,7 +585,7 @@ body.intro-enabled #intro.view.is-active {
   color: #ff0068;
   font-family: "GT-Pressura-Extended-Black", system-ui, sans-serif;
   font-weight: 900;
-  font-size: calc(var(--about-font-size) * 10.8);
+  font-size: clamp(5.5rem, 10.8vw, 13.5rem);
   transition: opacity 400ms ease;
 }
 
@@ -596,8 +596,8 @@ body.intro-enabled #intro.view.is-active {
 
 .instruction-start {
   position: fixed;
-  bottom: 56px;
-  right: 56px;
+  bottom: clamp(30px, 5vh, 60px);
+  right: clamp(30px, 4vw, 60px);
   z-index: 10;
   padding: 12px 30px;
   border-radius: 999px;
@@ -750,4 +750,30 @@ body.intro-enabled #intro.view.is-active {
 body.about-ready .about-overlay {
   pointer-events: auto;
   opacity: 1;
+}
+
+/* ---- Desktop responsiveness ---- */
+
+@media (max-width: 1100px) {
+  .instruction-word.word-5 {
+    --word-x: 32vw;
+  }
+}
+
+@media (max-height: 750px) {
+  .index-gallery {
+    --grid-rows: 2;
+    grid-template-rows: repeat(2, var(--card-height));
+  }
+}
+
+@media (min-width: 2200px) {
+  .index-card {
+    max-width: 340px;
+  }
+
+  .index-gallery {
+    --col-gap: 16px;
+    --row-gap: 20px;
+  }
 }
