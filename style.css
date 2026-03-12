@@ -745,6 +745,9 @@ body.intro-enabled #intro.view.is-active {
 
 .about-overlay p {
   margin: 0;
+  orphans: 2;
+  widows: 2;
+  text-wrap: pretty;
 }
 
 body.about-ready .about-overlay {
