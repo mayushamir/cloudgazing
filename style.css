@@ -384,7 +384,7 @@ body.drawing-enabled .about-toggle {
 .selection-input {
   outline: none;
   width: max-content;
-  min-width: 14ch;
+  min-width: 15ch;
   color: #ff0068;
   transition: border-color 150ms ease;
 }
